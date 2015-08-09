@@ -1,2 +1,3 @@
 # project-euler
-Solutions to Project Euler problems in different languages
+
+Solutions to [https://projecteuler.net](Project Euler) problems in different languages
