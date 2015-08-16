@@ -10,7 +10,7 @@ from collections import OrderedDict
 
 def find_next_prime(primes):
     last = primes[-1]
-    candidates = OrderedDict((k, 1) for k in range(last + 1, last * 2  + 1))
+    candidates = OrderedDict((k, 1) for k in range(last + 1, last * 2 + 1))
 
     for p in primes:
         for i in xrange(p * 2, last * 2 + 1, p):
@@ -29,7 +29,8 @@ def find_largest_prime_factor(number):
         last = primes[-1]
         if number % last == 0:
             largest = last
-            print largest
+            #print largest, primes
+
             number /= last
             # Keep dividing
             while number % last == 0:
