@@ -1,9 +1,12 @@
 """Smallest Multiple - https://projecteuler.net/problem=5
 
-2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
+2520 is the smallest number that can be divided by each of the numbers from
+1 to 10 without any remainder.
 
-What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
+What is the smallest positive number that is evenly divisible by all of the
+numbers from 1 to 20?
 """
+
 
 def get_prime_product(n):
     """Return a dictionary with prime keys and exponent values
@@ -25,6 +28,7 @@ def get_prime_product(n):
     result = {k: v for k, v in result.iteritems() if v > 0}
     return result
 
+
 numbers = range(20, 2, -1)
 result = {}
 
@@ -41,5 +45,3 @@ for k, v in result.iteritems():
     final_number *= k ** v
 
 assert 232792560 == final_number
-
-
