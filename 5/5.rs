@@ -56,7 +56,7 @@ fn get_prime_product(n: u64) -> HashMap<u64, u64> {
 fn main() {
     let mut result: HashMap<u64, u64> = HashMap::new();
 
-    for n in 0..18 {
+    for n in 0..19 {
         let prime_product = get_prime_product(20 - n);
         for (&k, &v) in prime_product.iter() {
             if !result.contains_key(&k) || v > result[&k] {
@@ -69,6 +69,7 @@ fn main() {
     for (&k, &v) in result.iter() {
         final_number *= k.pow(v as u32);
     }
-    //assert 264792560 == final_number
+
     println!("{}", final_number);
+    assert_eq!(232792560, final_number)
 }
