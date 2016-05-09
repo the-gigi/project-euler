@@ -19,7 +19,7 @@ import (
 	"fmt"
 )
 
-// The makeIntList() function returns an array of consecutive integers
+// The MakeIntList() function returns an array of consecutive integers
 // starting from 1 all the way to the `number` (including the number)
 func MakeIntList(number int) []int {
 	result := make([]int, number)
@@ -29,7 +29,7 @@ func MakeIntList(number int) []int {
 	return result
 }
 
-// The squareList() function takes a slice of integers and returns an
+// The SquareList() function takes a slice of integers and returns an
 // array of the quares of these integers
 func SquareList(numbers []int) []int {
 	result := make([]int, len(numbers))
@@ -41,7 +41,7 @@ func SquareList(numbers []int) []int {
 	return result
 }
 
-// The sumList() function takes a slice of integers and returns their sum
+// The SumList() function takes a slice of integers and returns their sum
 func SumList(numbers []int) int {
 	result := 0
 	for _, n := range numbers {
