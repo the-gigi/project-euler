@@ -24,7 +24,8 @@ func getCPUCount() (int, error) {
 }
 
 func discoverNewPrime(start int, candidates []bool) int {
-	for i := 0 + 1; i < len(candidates); i++ {
+	count := len(candidates)
+	for i := 0 + 1; i < count; i++ {
 		if candidates[i] {
 			return start + i
 		}
@@ -81,19 +82,26 @@ func findPrimes(start int, end int, primes []int) []int {
 	return primes
 }
 
+func findPrime10001() int {
+	primes := []int{2, 3}
+
+	start := 0
+	chunkSize := 1000
+
+	for len(primes) < 10001 {
+		primes = findPrimes(start, start+chunkSize-1, primes)
+		start += chunkSize
+	}
+
+	return primes[10000]
+}
+
 func main() {
 	//cpuCount, err := getCPUCount()
 	//if err != nil {
 	//	fmt.Println("Fail! " + err.Error())
 	//}
 	//fmt.Printf("CPU count: %d\n", cpuCount)
-	primes := []int{2, 3}
-
-	start := 0
-	chunkSize := 1000
-	for len(primes) < 10001 {
-		primes = findPrimes(start, start+chunkSize-1, primes)
-		start += chunkSize
-	}
-	fmt.Printf("The 10001s prime is: %d\n", primes[10000])
+	p10001 := findPrime10001()
+	fmt.Printf("The 10001s prime is: %d\n", p10001)
 }
