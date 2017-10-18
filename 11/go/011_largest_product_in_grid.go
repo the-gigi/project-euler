@@ -29,31 +29,8 @@ const text = `
 	01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48
 `
 
-const text2 = `
-	01 02 03 04 05
-	02 02 02 02 04
-	03 03 03 03 03
-	04 04 04 04 02
-	05 05 05 05 99
-`
-
-/*
-const text = `
-
-
-	01 02 03 04 05 = 14
-	02 02 02 02 04 = 10
-	03 03 03 03 03 = 12
-	04 04 04 04 02 = 16
-	05 05 05 05 99 = 114
-    -------------- \
-    14 14 14 14 108 108
-`
-*/
-
 const (
-	fastMode = true
-	gridSize = 5
+	gridSize = 20
 )
 
 var grid [][]int = [][]int{}
@@ -80,88 +57,16 @@ func populateGrid() {
 	}
 }
 
-func calculateHorizontalProduct(row, col int) int {
-	result := 1
-	times := 4
-	if fastMode {
-		if col > gridSize-4 {
-			times = gridSize - col
-		}
-	}
-	for i := 0; i < times; i++ {
-		fmt.Println(row, col, i)
-		v := grid[row][col+i]
-		if fastMode {
-			if v == 0 {
-				return 0
-			}
-		}
-		result *= v
-	}
-	return result
-}
-
-func calculateVerticalProduct(row, col int) int {
-	result := 1
-	times := 4
-	if fastMode {
-		if row > gridSize-4 {
-			times = gridSize - row
-		}
-	}
-	for i := 0; i < times; i++ {
-		v := grid[row+i][col]
-
-		if fastMode {
-			if v == 0 {
-				return 0
-			}
-		}
-		result *= v
-	}
-	return result
-}
-
-func calculateDiagonalProduct(row, col int) int {
-	result := 1
-
-	times := 4
-	if fastMode {
-		if row > gridSize-4 || col > gridSize-4 {
-			if row > col {
-				times = gridSize - row
-			} else {
-				times = gridSize - col
-			}
-		}
-	}
-
-	for i := 0; i < times; i++ {
-		v := grid[row+i][col+i]
-		if fastMode {
-			if v == 0 {
-				return 0
-			}
-		}
-		result *= v
-	}
-	return result
-}
-
 func calculateHorizontalSum(row, col int) int {
 	result := 0
 	times := 4
-	if fastMode {
-		if col > gridSize-4 {
-			times = gridSize - col
-		}
+	if col > gridSize-4 {
+		times = gridSize - col
 	}
 	for i := 0; i < times; i++ {
 		v := grid[row][col+i]
-		if fastMode {
-			if v == 0 {
-				return 0
-			}
+		if v == 0 {
+			return 0
 		}
 		result += v
 	}
@@ -171,18 +76,14 @@ func calculateHorizontalSum(row, col int) int {
 func calculateVerticalSum(row, col int) int {
 	result := 0
 	times := 4
-	if fastMode {
-		if row > gridSize-4 {
-			times = gridSize - row
-		}
+	if row > gridSize-4 {
+		times = gridSize - row
 	}
 	for i := 0; i < times; i++ {
 		v := grid[row+i][col]
 
-		if fastMode {
-			if v == 0 {
-				return 0
-			}
+		if v == 0 {
+			return 0
 		}
 		result += v
 	}
@@ -193,22 +94,18 @@ func calculateDiagonalSum(row, col int) int {
 	result := 0
 
 	times := 4
-	if fastMode {
-		if row > gridSize-4 || col > gridSize-4 {
-			if row > col {
-				times = gridSize - row
-			} else {
-				times = gridSize - col
-			}
+	if row > gridSize-4 || col > gridSize-4 {
+		if row > col {
+			times = gridSize - row
+		} else {
+			times = gridSize - col
 		}
 	}
 
 	for i := 0; i < times; i++ {
 		v := grid[row+i][col+i]
-		if fastMode {
-			if v == 0 {
-				return 0
-			}
+		if v == 0 {
+			return 0
 		}
 		result += v
 	}
@@ -219,109 +116,47 @@ func calculateReverseDiagonalSum(row, col int) int {
 	result := 0
 
 	times := 4
-	if fastMode {
-		if row < 4 || col > gridSize-4 {
-			if gridSize-1-row > col {
-				times = row + 1
-			} else {
-				times = gridSize - col
-			}
+	if row < 4 || col > gridSize-4 {
+		if gridSize-1-row > col {
+			times = row + 1
+		} else {
+			times = gridSize - col
 		}
 	}
 
 	for i := 0; i < times; i++ {
 		v := grid[row-i][col+i]
-		if fastMode {
-			if v == 0 {
-				return 0
-			}
+		if v == 0 {
+			return 0
 		}
 		result += v
 	}
 	return result
 }
 
-func findLargestProductInRow(row int) int {
+func findLargestSumInRow(row int) (result int, x int) {
 	limit := gridSize
-	if fastMode {
-		limit = gridSize - 3
-	}
-
-	result := 0
-	for i := 0; i < limit; i++ {
-		p := calculateHorizontalProduct(row, i)
-		if p > result {
-			result = p
-		}
-	}
-	return result
-}
-
-func findLargestProductInCol(col int) int {
-	limit := gridSize
-	if fastMode {
-		limit = gridSize - 3
-	}
-
-	result := 0
-	for i := 0; i < limit; i++ {
-		p := calculateVerticalProduct(i, col)
-		if p > result {
-			result = p
-		}
-	}
-	return result
-}
-
-func findLargestProductInDiagonal(row, col int) int {
-	dim := row
-	if col > row {
-		dim = col
-	}
-
-	limit := gridSize + 1 - dim
-	if fastMode {
-		if dim > gridSize-3 {
-			return 0
-		}
-	}
-	result := 0
-	for i := 0; i < limit; i++ {
-		p := calculateDiagonalProduct(row+i, col+i)
-		if p > result {
-			result = p
-		}
-	}
-	return result
-}
-
-func findLargestSumInRow(row int) (result int, y int) {
-	limit := gridSize
-	if fastMode {
-		limit = gridSize - 3
-	}
+	limit = gridSize - 3
 
 	for i := 0; i < limit; i++ {
 		p := calculateHorizontalSum(row, i)
 		if p > result {
 			result = p
-			y = i
+			x = i
 		}
 	}
 	return
 }
 
-func findLargestSumInCol(col int) (result int, x int) {
+func findLargestSumInCol(col int) (result int, y int) {
 	limit := gridSize
-	if fastMode {
-		limit = gridSize - 3
-	}
+	limit = gridSize - 3
 
 	for i := 0; i < limit; i++ {
 		p := calculateVerticalSum(i, col)
 		if p > result {
 			result = p
-			x = i
+			y = i
 		}
 	}
 	return
@@ -334,18 +169,16 @@ func findLargestSumInDiagonal(row, col int) (result int, x int, y int) {
 	}
 
 	limit := gridSize + 1 - dim
-	if fastMode {
-		if dim > gridSize-3 {
-			return 0, -1, -1
-		}
+	if dim > gridSize-3 {
+		return 0, -1, -1
 	}
 
 	for i := 0; i < limit; i++ {
 		p := calculateDiagonalSum(row+i, col+i)
 		if p > result {
 			result = p
-			x = row + i
-			y = col + i
+			x = col + i
+			y = row + i
 		}
 	}
 	return
@@ -358,77 +191,51 @@ func findLargestSumInReverseDiagonal(row, col int) (result int, x int, y int) {
 	}
 
 	limit := gridSize + 1 - dim
-	if fastMode {
-		if dim > gridSize-3 {
-			return 0, -1, -1
-		}
+	if dim > gridSize-3 {
+		return 0, -1, -1
 	}
 
 	for i := 0; i < limit; i++ {
-		p := calculateReverseDiagonalSum(row-i, col+i)
-		if p > result {
-			result = p
-			x = row - i
-			y = col + i
+		s := calculateReverseDiagonalSum(row-i, col+i)
+		if s > result {
+			result = s
+			y = row - i
+			x = col + i
 		}
 	}
 	return
 }
 
-func findLargestProductInGrid() int {
-	largestProduct := 0
-	for i := 0; i < gridSize; i++ {
-		product := findLargestProductInRow(i)
-		if product > largestProduct {
-			largestProduct = product
-		}
-		product = findLargestProductInCol(i)
-		if product > largestProduct {
-			largestProduct = product
-		}
-		product = findLargestProductInDiagonal(i, 0)
-		if product > largestProduct {
-			largestProduct = product
-		}
-		if i > 0 {
-			product = findLargestProductInDiagonal(0, i)
-			if product > largestProduct {
-				largestProduct = product
-			}
-		}
-	}
-	return largestProduct
-}
-
 func findLargestSumInGrid() int {
 	largestSum := 0
 	for i := 0; i < gridSize; i++ {
-		sum, y := findLargestSumInRow(i)
+		sum, x := findLargestSumInRow(i)
 		if sum > largestSum {
 			largestSum = sum
 			direction = "h"
 			rr = i
-			cc = y
+			cc = x
 		}
-		sum, x := findLargestSumInCol(i)
+		sum, y := findLargestSumInCol(i)
 		if sum > largestSum {
 			largestSum = sum
 			direction = "v"
-			rr = x
+			rr = y
 			cc = i
 		}
 		sum, x, y = findLargestSumInDiagonal(i, 0)
 		if sum > largestSum {
 			largestSum = sum
 			direction = "d"
-			rr = i
-			cc = 0
+			rr = y
+			cc = x
 		}
 		sum, x, y = findLargestSumInReverseDiagonal(i, 0)
 		if sum > largestSum {
 			largestSum = sum
 			direction = "rd"
-			rr = gridSize-1-i
+			rr = y
+			cc = x
 		}
 
 		if i > 0 {
@@ -436,16 +243,16 @@ func findLargestSumInGrid() int {
 			if sum > largestSum {
 				largestSum = sum
 				direction = "d"
-				rr = x
-				cc = y
+				rr = y
+				cc = x
 			}
 
 			sum, x, y = findLargestSumInReverseDiagonal(0, i)
 			if sum > largestSum {
 				largestSum = sum
 				direction = "rd"
-				rr = x
-				cc = y
+				rr = y
+				cc = x
 			}
 		}
 	}
@@ -464,11 +271,14 @@ func calculateProduct() (product int) {
 		}
 	} else if direction == "d" {
 		for i := 0; i < 4; i++ {
-			product *= grid[rr+i][cc]
+			product *= grid[rr+i][cc+i]
 		}
 	} else {
+		if rr < 3 {
+			return
+		}
 		for i := 0; i < 4; i++ {
-			product *= grid[rr-i][cc]
+			product *= grid[rr-i][cc+i]
 		}
 	}
 	return
@@ -476,8 +286,6 @@ func calculateProduct() (product int) {
 
 func main() {
 	populateGrid()
-	//result := findLargestProductInGrid()
-	//fmt.Printf("The largest product of 4 adjacent values is: %d\n", result)
 	result := findLargestSumInGrid()
 	fmt.Printf("The largest sum of 4 adjacent values is: %d\n", result)
 	fmt.Printf("The largest product of 4 adjacent values is: %d\n", calculateProduct())
