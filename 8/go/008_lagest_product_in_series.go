@@ -1,7 +1,8 @@
 package main
 
 import (
-	"strings"
+	"github.com/the-gigi/project-euler/8/go/islands"
+	"github.com/the-gigi/project-euler/8/go/trivial"
 	"fmt"
 )
 
@@ -28,58 +29,10 @@ const text = `
 71636269561882670428252483600823257530420752963450
 `
 
-func findLargestProdcutInSeries(input string) int64 {
-	series := strings.Replace(input,"\n", "", -1)
-	digits := make([]int, len(series))
-	for i, c := range series {
-		digits[i] = int(c) - 48
-	}
-
-	maxLength := 13
-	if len(input) < 13 {
-		maxLength = len(input)
-	}
-
-	largestSum := 0
-	for i := 0; i < maxLength; i++ {
-		largestSum += digits[i]
-	}
-
-	currSum := largestSum
-	index := 0
-	for i := maxLength; i < len(digits); i++ {
-		d := digits[i]
-		if d > digits[index] {
-			currSum = currSum - digits[index] + d
-			if currSum > largestSum {
-				largestSum = currSum
-			}
-		}
-
-		index++
-	}
-
-	result := int64(digits[index])
-	for i := index + 1; i < index + maxLength; i++ {
-		result *= int64(digits[i])
-	}
-	return result
-}
-
-
 func main() {
-	text := strings.Replace(text,"\n", "", -1)
-	islands := strings.Split(text, "0")
-	maxProduct := int64(0)
-	for _, island := range islands {
-		if island == "" {
-			continue
-		}
-		result := findLargestProdcutInSeries(island)
-		if result > maxProduct {
-			maxProduct = result
-		}
-	}
+	result := islands.FindLargestProduct(text)
+	fmt.Println("With islands:", result) // should be 23514624000
 
-	fmt.Println(maxProduct) // should be 23514624000
+	result = trivial.FindLargestProduct(text)
+	fmt.Println("Trivial:", result) // should be 23514624000
 }

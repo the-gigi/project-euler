@@ -1,34 +1,45 @@
 package scan
 
-import (
-	"strings"
-)
 
-
-func findLargestSumInSeries(digits *[1000]byte, start, end int) (int, int) {
+func findLargestProductInSeries(digits *[1000]byte, start, end int) int64 {
 	if (end - start)  < 13 {
-		return -1, -1
+		return -1
 	}
 
-	largestSum := int((*digits)[start])
+	largestProduct := int64((*digits)[start])
 	for i := 1; i < 13 ; i++ {
-		largestSum += int((*digits)[i])
-	}
-
-	currSum := largestSum
-	index := 0
-	old := int((*digits)[start])
-	for i := start + 13; i < end; i++ {
-		cur := int((*digits)[i])
-		currSum += cur - old
-		if currSum > largestSum {
-			largestSum = currSum
-			index = i
+		d := int64((*digits)[start + i])
+		if d == 1 {
+			continue
 		}
-		old = cur
+		largestProduct *= d
 	}
 
-	return largestSum, index
+	currProduct := largestProduct
+	for ii := start + 13; ii < end; ii++ {
+		old := int64((*digits)[ii-13])
+		cur := int64((*digits)[ii])
+		if old == cur {
+			continue
+		}
+
+		if cur == 1 {
+			currProduct /= old
+			continue
+		}
+
+		if old == 1 {
+			currProduct *= cur
+		} else {
+			currProduct = currProduct / old * cur
+		}
+
+		if currProduct > largestProduct {
+			largestProduct = currProduct
+		}
+	}
+
+	return largestProduct
 }
 
 
@@ -46,31 +57,25 @@ func FindLargestProduct(text string) int64 {
 	start := -1
 	end := -1
 	findStart := true
-	largestSum := -1
-	largestIndex := -1
-	for i := 0; i < len(digits) - 13; i++ {
+	var largestProduct int64
+	for ii := 0; ii < len(digits) - 13; ii++ {
 		if findStart {
-			if digits[i] == 0 {
+			if digits[ii] == 0 {
 				continue
 			} else {
-				start = i
+				start = ii
 				findStart = false
 			}
 		}
 
-		if digits[i] == 0 {
-			end = i
-			result, index := findLargestSumInSeries(&digits, start, end)
-			if result > largestSum {
-				largestSum, largestIndex = result, index
+		if digits[ii] == 0 {
+			end = ii
+			result := findLargestProductInSeries(&digits, start, end)
+			if result > largestProduct {
+				largestProduct = result
 			}
 			findStart = true
 		}
-	}
-
-	largestProduct := int64(digits[largestIndex])
-	for i := largestIndex + 1; i < largestIndex + 13; i++ {
-		largestProduct *= int64(digits[i])
 	}
 
 	return largestProduct
