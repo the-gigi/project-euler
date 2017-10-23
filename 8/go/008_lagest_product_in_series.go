@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/the-gigi/project-euler/8/go/islands"
 	"github.com/the-gigi/project-euler/8/go/trivial"
+	"github.com/the-gigi/project-euler/8/go/scan"
 	"fmt"
 )
 
@@ -30,7 +31,10 @@ const text = `
 `
 
 func main() {
-	result := islands.FindLargestProduct(text)
+	result := scan.FindLargestProduct(text)
+	fmt.Println("With Scan:", result) // should be 23514624000
+
+	result = islands.FindLargestProduct(text)
 	fmt.Println("With islands:", result) // should be 23514624000
 
 	result = trivial.FindLargestProduct(text)
