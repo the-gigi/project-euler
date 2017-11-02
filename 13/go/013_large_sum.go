@@ -117,33 +117,47 @@ const (
 	digitCount = 50
 )
 
-var cols [][]int = [][]int{}
+var cols [digitCount + 2][]int
 
 func populateCols() {
+	// Keep to empty rows
 	rows := strings.Fields(text)
 	for _, row := range rows {
-		col := make([]int, 100)
 		for x := 0; x < len(row); x++ {
-			col = append(col, int(row[x]) - 48) // convert to int
+			cols[x + 2] = append(cols[x + 2], int(row[x]) - 48)
 		}
 	}
 	return
 }
 
 
-func calcColSum(index int) int {
-	return -1
+func calcColSum(cols [digitCount + 2][]int, index int) (sum int) {
+	for _, v := range(cols[index]) {
+		sum += v
+	}
+	return
 }
 
 func main() {
 	populateCols()
-	for i := 0; i < numCount; i++ {
-		for j := 0; j < digitCount; j++ {
-			fmt.Print(cols[j][i])
-		}
-		fmt.Println()
+	sumDigits := [digitCount + 2]int{}
+	for i := digitCount + 1; i > 1; i-- {
+		sum := calcColSum(cols, i)
+		singles := sum % 10
+		tens := ((sum - singles) / 10) % 10
+		hundreds := sum / 100
+		sumDigits[i] = singles
+		cols[i - 1] = append(cols[i - 1], tens)
+		cols[i - 2] = append(cols[i - 2], hundreds)
 	}
+	sum1 := calcColSum(cols, 1)
+	sumDigits[1] += sum1
+	sumDigits[0] += sumDigits[1] / 10
+	sumDigits[0] += sumDigits[1] % 10
 
-	index := digitCount - 1
 
+	for _, i := range sumDigits[:10] {
+		fmt.Print(i)
+	}
+	fmt.Println()
 }
