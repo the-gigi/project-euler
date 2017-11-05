@@ -4,6 +4,8 @@ import "fmt"
 
 /*
 Work out the first ten digits of the sum of a one-hundred 50-digit numbers.
+
+https://projecteuler.net/problem=13
  */
 
 import (
@@ -113,7 +115,6 @@ const (
 		20849603980134001723930671666823555245252804609722
 		53503534226472524250874054075591789781264330331690
 	`
-	numCount = 100
 	digitCount = 50
 )
 
