@@ -1,23 +1,21 @@
 
 #[derive(Debug)]
 pub struct Cell {
-    row: u8,
-    index: u8,
-    value: u8,
-    max_sum_value: u16,
+    pub value: u8,
+    pub sum_value: u16,
 }
 
 impl Cell {
-    pub fn new(row: u8, index: u8, value: u8) -> Cell {
+    pub fn new(value: u8) -> Cell {
         Cell{
-            row,
-            index,
             value,
-            max_sum_value: 0
+            sum_value: 0
         }
     }
-    fn update(&mut self, max_sum_value: u16) {
-        self.max_sum_value = max_sum_value;
+    pub fn update(&mut self, max_sum_value: u16) {
+        if self.value as u16 + max_sum_value > self.sum_value {
+            self.sum_value = self.value as u16 + max_sum_value;
+        }
     }
 }
 

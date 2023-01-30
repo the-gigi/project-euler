@@ -20,7 +20,7 @@ mod cell;
 mod triangle;
 
 fn main() {
-    let t = triangle::Triangle::new("triangle.txt");
+    let mut t = triangle::Triangle::new("triangle.txt");
     let max_total = t.find_max_total();
     println_f!("max_total: {max_total}");
 }
