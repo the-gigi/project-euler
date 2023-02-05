@@ -26,7 +26,7 @@ fn main() {
         let sorted = sort_number_digits(cube);
         cubes.entry(sorted.clone()).or_default().push(cube);
         let v = &cubes[&sorted];
-        if v.len() == 5 {
+        if v.len() == 5 {;
             println!("answer: {}", v[0]);
             return
         }
