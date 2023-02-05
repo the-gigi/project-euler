@@ -69,10 +69,6 @@ impl Segment {
         }
     }
 
-    fn bbox(&self) -> &Rectangle {
-        &self.bounding_box
-    }
-
     fn intersect(&self, other: &Segment) -> bool {
         if !self.bounding_box.intersect(&other.bounding_box) {
             return false;
