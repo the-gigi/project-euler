@@ -7,3 +7,10 @@ edition = "2021"
 
 [dependencies]
 
+[lib]
+name = "lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "project_euler_165"
+path = "src/main.rs"

@@ -31,22 +31,26 @@ impl Rectangle {
 
     pub fn contains(&self, x: f64, y: f64) -> bool {
         self.left as f64 <= x &&
-        self.right as f64 >= x &&
-        self.top as f64 <= y &&
-        self.bottom as f64 >= y
+            self.right as f64 >= x &&
+            self.top as f64 <= y &&
+            self.bottom as f64 >= y
     }
 }
 
-#[derive(Debug, Clone, Copy)]
-pub struct Segment {
+#[derive(Debug, Clone, Copy, Eq, Hash, PartialEq)]
+pub struct Coordinates {
     x1: i32,
     y1: i32,
     x2: i32,
     y2: i32,
+}
 
-    slope: f64,
-    y_intersect: f64,
+#[derive(Debug, Clone, Copy)]
+pub struct Segment {
+    pub coords: Coordinates,
     pub bounding_box: Rectangle,
+    slope: f64,
+    y_intersept: f64,
 }
 
 impl Segment {
@@ -59,24 +63,49 @@ impl Segment {
         };
         let slope = (y2 - y1) as f64 / (x2 - x1) as f64;
         Segment {
-            x1,
-            y1,
-            x2,
-            y2,
+            coords: Coordinates { x1, y1, x2, y2 },
             bounding_box: bbox,
             slope,
-            y_intersect: y1 as f64 - slope * x1 as f64,
+            y_intersept: y1 as f64 - slope * x1 as f64,
         }
     }
 
-    fn intersect(&self, other: &Segment) -> bool {
+    /**
+     * intersect()
+     *
+     * Calculates if two line segments intersect.
+     *
+     * @param other - The other line segment to check for intersection
+     *
+     * @return - true if the two line segments intersect, otherwise false
+     */
+    pub fn intersect(&self, other: &Segment) -> bool {
+        // Check if the segments have the same slope
+        if self.slope == other.slope {
+            return false;
+        }
+
+        // Check if the bounding boxes of the segments intersect
         if !self.bounding_box.intersect(&other.bounding_box) {
             return false;
         }
 
-        // calculate intersection points of the segment lines
-        let x = (other.y_intersect - self.y_intersect) / (self.slope - other.slope);
-        let y = self.slope * x + self.y_intersect;
+        // Calculate intersection point of the segment lines
+        let x = (other.y_intersept - self.y_intersept) / (self.slope - other.slope);
+        let y = self.slope * x + self.y_intersept;
+
+        // If the intersection is a segment end then it is not a true intersection point
+        let endpoints: Vec<(f64, f64)> = vec![
+            (self.coords.x1, self.coords.y1),
+            (self.coords.x2, self.coords.y2),
+            (other.coords.x1, other.coords.y1),
+            (other.coords.x2, other.coords.y2)]
+            .iter()
+            .map(|(a, b)| (*a as f64, *b as f64))
+            .collect();
+        if endpoints.contains(&(x, y)) {
+            return false;
+        }
 
         // If the intersection point is in the bounding box of both segments then they intersect
         self.bounding_box.contains(x, y) && other.bounding_box.contains(x, y)
