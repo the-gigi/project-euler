@@ -5,7 +5,6 @@ use num_rational::Rational64;
 
 const BBS_S0: usize = 290797;
 const BBS_MODULU: usize = 50515093;
-const SEGMENT_COUNT: usize = 500;
 const COORD_FACTOR: usize = 500;
 
 // BlumBlumShub pseudorandom number generator
@@ -32,18 +31,20 @@ fn generate_segment(n: usize) -> Segment {
 pub struct SegmentStore {
     horiz_sorted_segments: Vec<Segment>,
     vert_sorted_segments: Vec<Segment>,
+    segment_count: usize,
 }
 
 impl SegmentStore {
-    pub fn new() -> Self {
+    pub fn new(segment_count: usize) -> Self {
         Self {
             horiz_sorted_segments: vec![],
             vert_sorted_segments: vec![],
+            segment_count
         }
     }
 
     pub fn generate_segments(&mut self) {
-        let segments = (0..SEGMENT_COUNT)
+        let segments = (0..self.segment_count)
             .map(|i| generate_segment(1 + i * 4))
             .collect::<Vec<_>>();
 
@@ -61,34 +62,36 @@ impl SegmentStore {
         horiz_index: usize,
         vert_index: usize,
     ) -> HashSet<&Coordinates> {
-        let mut horiz_candidates: HashSet<&Coordinates> = HashSet::new();
+        //let mut horiz_candidates: HashSet<&Coordinates> = HashSet::new();
         let mut vert_candidates: HashSet<&Coordinates> = HashSet::new();
 
-        // Prepare horizontal candidates
-        let right = self.horiz_sorted_segments[horiz_index].bounding_box.right;
-        for i in (horiz_index + 1)..self.horiz_sorted_segments.len() {
-            let candidate = &self.horiz_sorted_segments[i];
-            if candidate.bounding_box.left >= right {
-                break;
-            }
-            horiz_candidates.insert(&candidate.coords);
-        }
+        // // Prepare horizontal candidates
+        // let right = self.horiz_sorted_segments[horiz_index].bounding_box.right;
+        // for i in (horiz_index + 1)..self.horiz_sorted_segments.len() {
+        //     let candidate = &self.horiz_sorted_segments[i];
+        //     if candidate.bounding_box.left > right {
+        //         break;
+        //     }
+        //     horiz_candidates.insert(&candidate.coords);
+        // }
 
         // Prepare vertical candidates
         let bottom = self.vert_sorted_segments[vert_index].bounding_box.bottom;
         for i in (vert_index + 1)..self.vert_sorted_segments.len() {
             let candidate = &self.vert_sorted_segments[i];
-            if candidate.bounding_box.top >= bottom {
+            if candidate.bounding_box.top > bottom {
                 break;
             }
             vert_candidates.insert(&candidate.coords);
         }
 
-        // Return the intersection of the horizontal and vertical candidates
-        horiz_candidates
-            .intersection(&vert_candidates)
-            .cloned()
-            .collect()
+        // // Return the intersection of the horizontal and vertical candidates
+        // horiz_candidates
+        //     .intersection(&vert_candidates)
+        //     .cloned()
+        //     .collect()
+
+        vert_candidates
     }
 
     pub fn count_intersecting_segments(&self) -> i64 {

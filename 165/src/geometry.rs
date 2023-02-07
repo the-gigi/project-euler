@@ -105,27 +105,24 @@ impl Segment {
             return (Rational64::default(), Rational64::default(), false);
         }
 
-        // // Check if the bounding boxes of the segments intersect
-        // if !self.bounding_box.intersect(&other.bounding_box) {
-        //     return (Rational64::default(), Rational64::default(), false);
-        // }
+        // Check if the bounding boxes of the segments intersect
+        if !self.bounding_box.intersect(&other.bounding_box) {
+            return (Rational64::default(), Rational64::default(), false);
+        }
 
         // Calculate intersection point of the segment lines
-        let mut x = Rational64::default();
-        let mut y = Rational64::default();
-        // if self.is_vertical {
-        //     x = self.coords.x1;
-        //     y = other.slope * x + other.y_intercept;
-        // } else if other.is_vertical {
-        //     x = other.coords.x1;
-        //     y = self.slope * x + self.y_intercept;
-        // } else {
-        //     x = (other.y_intercept - self.y_intercept) / (self.slope - other.slope);
-        //     y = self.slope * x + self.y_intercept;
-        // }
-
-        x = (other.y_intercept - self.y_intercept) / (self.slope - other.slope);
-        y = self.slope * x + self.y_intercept;
+        let mut x: Rational64;
+        let mut y: Rational64;
+        if self.is_vertical {
+            x = self.coords.x1;
+            y = other.slope * x + other.y_intercept;
+        } else if other.is_vertical {
+            x = other.coords.x1;
+            y = self.slope * x + self.y_intercept;
+        } else {
+            x = (other.y_intercept - self.y_intercept) / (self.slope - other.slope);
+            y = self.slope * x + self.y_intercept;
+        }
 
         // Check if the intersection point is an end point of one of the segments
         if (x, y) == (self.coords.x1, self.coords.y1) ||

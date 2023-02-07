@@ -41,8 +41,10 @@
 
 use lib::segment_store::SegmentStore;
 
+const SEGMENT_COUNT: usize = 5000;
+
 fn main() {
-    let mut sg = SegmentStore::new();
+    let mut sg = SegmentStore::new(SEGMENT_COUNT);
     sg.generate_segments();
     let count = sg.count_intersecting_segments();
     println!("intersecting segments: {}", count);
